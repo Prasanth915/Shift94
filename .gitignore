@@ -1,0 +1,40 @@
+# Dependency directories
+node_modules/
+
+# Local configuration files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build output
+dist/
+build/
+
+# Uploads directory contents (except placeholder/gitkeep)
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Prisma generated migrations metadata (only commit final migration SQL files)
+backend/prisma/migrations/migration_lock.toml
