@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { encrypt } from '../utils/encryption.js';
 
 const prisma = new PrismaClient();
 
@@ -29,7 +30,7 @@ async function main() {
     data: {
       userId: user.id,
       platform: 'GITHUB',
-      accessToken: 'encrypted_github_token_placeholder',
+      accessToken: encrypt('mock_github_token'),
       refreshToken: null,
       username: 'johndev',
       profileUrl: 'https://github.com/johndev',
@@ -41,8 +42,8 @@ async function main() {
     data: {
       userId: user.id,
       platform: 'LINKEDIN',
-      accessToken: 'encrypted_linkedin_token_placeholder',
-      refreshToken: 'encrypted_linkedin_refresh_token_placeholder',
+      accessToken: encrypt('mock_linkedin_token'),
+      refreshToken: encrypt('mock_linkedin_refresh_token'),
       username: 'John Developer',
       profileUrl: 'https://linkedin.com/in/johndev',
       status: 'CONNECTED',

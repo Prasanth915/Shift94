@@ -38,6 +38,7 @@ import oauthRoutes from './src/modules/oauth/oauth.routes.js';
 import dashboardRoutes from './src/modules/history/dashboard.routes.js';
 import historyRoutes from './src/modules/history/history.routes.js';
 import settingsRoutes from './src/modules/settings/settings.routes.js';
+import publishRoutes from './src/modules/publishing/publish.routes.js';
 
 // Register routes
 app.use('/api/v1/auth', authRoutes);
@@ -46,6 +47,7 @@ app.use('/api/v1/oauth', oauthRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
 app.use('/api/v1/history', historyRoutes);
 app.use('/api/v1/settings', settingsRoutes);
+app.use('/api/v1/publish', publishRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

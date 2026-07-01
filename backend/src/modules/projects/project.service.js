@@ -1,5 +1,8 @@
 import { validateProjectInput } from '../../../../shared/validators/index.js';
 import { calculatePagination } from '../../../../shared/helpers/index.js';
+import fs from 'fs';
+import path from 'path';
+import config from '../../../config/index.js';
 
 /**
  * Service orchestrating project creation, updates, and listings.
@@ -84,6 +87,19 @@ export class ProjectService {
       const error = new Error('You do not have permission to delete this project.');
       error.statusCode = 403;
       throw error;
+    }
+
+    // Unlink cover image if it exists
+    if (project.image && project.image.startsWith('/uploads/')) {
+      const filename = project.image.replace(/^\/uploads\//, '');
+      const filePath = path.join(config.uploadPath, filename);
+      try {
+        if (fs.existsSync(filePath)) {
+          await fs.promises.unlink(filePath);
+        }
+      } catch (err) {
+        console.error(`Failed to delete project cover image file: ${filePath}`, err);
+      }
     }
 
     return this.projectRepository.delete(id);

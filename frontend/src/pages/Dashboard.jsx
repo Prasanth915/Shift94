@@ -7,6 +7,7 @@ import {
   Github,
   ArrowRight,
   RefreshCw,
+  Trash2,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { DashboardLayout } from '../layouts/DashboardLayout.jsx';
@@ -21,6 +22,23 @@ export const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [recent, setRecent] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [projectToDelete, setProjectToDelete] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const handleDeleteProject = async () => {
+    if (!projectToDelete) return;
+    setDeleteLoading(true);
+    try {
+      await api.delete(`/projects/${projectToDelete.id}`);
+      toast.success('Project deleted successfully.');
+      setProjectToDelete(null);
+      fetchDashboardData();
+    } catch (err) {
+      toast.error(err.response?.data?.message || err.message || 'Failed to delete project.');
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
 
   const fetchDashboardData = async () => {
     setLoading(true);
@@ -159,6 +177,14 @@ export const Dashboard = () => {
                           Edit
                         </Button>
                       </Link>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setProjectToDelete(project)}
+                        className="text-red-500 hover:text-red-400 hover:bg-red-500/10 p-2"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
                   </Card>
                 ))}
@@ -186,6 +212,35 @@ export const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {projectToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md bg-zinc-950/80 border border-zinc-800/80 rounded-2xl p-6 shadow-2xl backdrop-blur-md animate-scale-in">
+            <h3 className="text-lg font-semibold text-white font-display">Delete Project?</h3>
+            <p className="text-xs text-zinc-400 mt-2">
+              Are you sure you want to delete <span className="font-semibold text-zinc-200">"{projectToDelete.title}"</span>? This action cannot be undone.
+            </p>
+            <div className="flex items-center justify-end gap-3 mt-6">
+              <Button
+                variant="ghost"
+                onClick={() => setProjectToDelete(null)}
+                disabled={deleteLoading}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="primary"
+                className="bg-red-600 hover:bg-red-700 text-white border-none hover:text-white"
+                onClick={handleDeleteProject}
+                loading={deleteLoading}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 };

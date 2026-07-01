@@ -10,6 +10,7 @@ const tests = [
   'src/modules/history/dashboard.test.js',
   'src/modules/history/history.test.js',
   'src/modules/settings/settings.test.js',
+  'src/modules/publishing/publish.test.js',
 ];
 
 console.info('==================================================');

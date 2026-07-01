@@ -16,6 +16,23 @@ export const EditProject = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
+  const [projectTitle, setProjectTitle] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const handleDelete = async () => {
+    setDeleteLoading(true);
+    try {
+      await projectService.delete(id);
+      toast.success('Project deleted successfully.');
+      navigate('/dashboard');
+    } catch (err) {
+      toast.error(err.response?.data?.message || err.message || 'Failed to delete project.');
+    } finally {
+      setDeleteLoading(false);
+      setShowDeleteModal(false);
+    }
+  };
 
   // File Upload State
   const [imagePreview, setImagePreview] = useState(null);
@@ -42,7 +59,7 @@ export const EditProject = () => {
       try {
         const response = await projectService.getById(id);
         const p = response.data.project;
-
+        setProjectTitle(p.title);
         setValue('title', p.title);
         setValue('subtitle', p.subtitle || '');
         setValue('description', p.description);
@@ -314,10 +331,47 @@ export const EditProject = () => {
               >
                 Cancel
               </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full text-red-500 hover:text-red-400 hover:bg-red-500/10 border-red-500/20 hover:border-red-500/40"
+                onClick={() => setShowDeleteModal(true)}
+                disabled={loading}
+              >
+                Delete Project
+              </Button>
             </div>
           </div>
         </form>
       </div>
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md bg-zinc-950/80 border border-zinc-800/80 rounded-2xl p-6 shadow-2xl backdrop-blur-md animate-scale-in">
+            <h3 className="text-lg font-semibold text-white font-display">Delete Project?</h3>
+            <p className="text-xs text-zinc-400 mt-2">
+              Are you sure you want to delete <span className="font-semibold text-zinc-200">"{projectTitle}"</span>? This action cannot be undone.
+            </p>
+            <div className="flex items-center justify-end gap-3 mt-6">
+              <Button
+                variant="ghost"
+                onClick={() => setShowDeleteModal(false)}
+                disabled={deleteLoading}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="primary"
+                className="bg-red-600 hover:bg-red-700 text-white border-none hover:text-white"
+                onClick={handleDelete}
+                loading={deleteLoading}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 };

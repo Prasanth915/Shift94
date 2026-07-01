@@ -163,7 +163,17 @@ export const History = () => {
                 <tbody className="divide-y divide-zinc-850 text-xs text-zinc-300">
                   {logs.map((log) => (
                     <tr key={log.id} className="hover:bg-zinc-900/10 transition duration-100">
-                      <td className="p-4 font-medium text-white">{log.project?.title}</td>
+                      <td className="p-4">
+                        <div className="font-medium text-white">{log.project?.title}</div>
+                        {log.platform === 'GITHUB' && log.apiResponse && (
+                          <div className="text-[10px] text-zinc-500 mt-1 space-y-0.5">
+                            <div>Repo: <span className="text-zinc-400 font-mono">{log.apiResponse.repository || (log.project?.githubUrl ? log.project.githubUrl.replace('https://github.com/', '') : 'N/A')}</span></div>
+                            {log.apiResponse.releaseName && (
+                              <div>Release: <span className="text-zinc-400">{log.apiResponse.releaseName} ({log.apiResponse.tagName || ''})</span></div>
+                            )}
+                          </div>
+                        )}
+                      </td>
                       <td className="p-4">{log.platform}</td>
                       <td className="p-4">
                         <Badge variant={getStatusBadgeVariant(log.status)}>{log.status}</Badge>

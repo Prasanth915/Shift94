@@ -94,4 +94,86 @@ export class GitHubService {
       forks: repo.forks_count,
     }));
   }
+
+  /**
+   * Verifies if repository exists and user has push/admin permissions.
+   * @param {string} accessToken
+   * @param {string} owner
+   * @param {string} repo
+   * @returns {Promise<boolean>}
+   */
+  async checkRepositoryAccess(accessToken, owner, repo) {
+    try {
+      const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2022-11-28',
+          'User-Agent': 'Shift-9-App',
+        },
+      });
+
+      const permissions = response.data.permissions;
+      if (!permissions || (!permissions.push && !permissions.admin)) {
+        const error = new Error('You do not have push permissions for this repository.');
+        error.statusCode = 403;
+        throw error;
+      }
+      return true;
+    } catch (err) {
+      if (err.response) {
+        if (err.response.status === 404) {
+          const error = new Error('Repository not found on GitHub.');
+          error.statusCode = 404;
+          throw error;
+        }
+        if (err.response.status === 401) {
+          const error = new Error('Invalid or expired GitHub token.');
+          error.statusCode = 401;
+          throw error;
+        }
+        if (err.response.status === 403) {
+          const error = new Error('Access to repository forbidden or missing permissions.');
+          error.statusCode = 403;
+          throw error;
+        }
+      }
+      throw err;
+    }
+  }
+
+  /**
+   * Creates a new release in the specified repository.
+   * @param {string} accessToken
+   * @param {string} owner
+   * @param {string} repo
+   * @param {object} releaseData
+   * @returns {Promise<object>}
+   */
+  async createRelease(accessToken, owner, repo, releaseData) {
+    try {
+      const response = await axios.post(
+        `https://api.github.com/repos/${owner}/${repo}/releases`,
+        releaseData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: 'application/vnd.github+json',
+            'X-GitHub-Api-Version': '2022-11-28',
+            'User-Agent': 'Shift-9-App',
+          },
+        }
+      );
+      return response.data;
+    } catch (err) {
+      if (err.response) {
+        const msg = err.response.data?.message || err.message;
+        const error = new Error(`Failed to create GitHub release: ${msg}`);
+        error.statusCode = err.response.status || 400;
+        error.apiResponse = err.response.data;
+        throw error;
+      }
+      throw err;
+    }
+  }
 }

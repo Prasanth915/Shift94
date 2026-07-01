@@ -9,6 +9,18 @@ async function runTests() {
 
   const publisher = new GitHubPublisher();
 
+  // Mock the githubService methods to prevent network requests
+  publisher.githubService = {
+    checkRepositoryAccess: async (token, owner, repo) => true,
+    createRelease: async (token, owner, repo, data) => ({
+      id: 12345,
+      name: data.name,
+      tag_name: data.tag_name,
+      published_at: new Date().toISOString(),
+      html_url: `https://github.com/${owner}/${repo}/releases/tag/${data.tag_name}`,
+    }),
+  };
+
   // 1. Publisher Platform Verification
   console.info('Verifying publisher platform identifier...');
   assert.strictEqual(publisher.getPlatform(), 'GITHUB');
@@ -26,9 +38,10 @@ async function runTests() {
 
   const publishResult = await publisher.publish(mockProject, mockAccount);
   assert.strictEqual(publishResult.success, true);
-  assert.strictEqual(publishResult.externalUrl, 'https://github.com/johndev/test-portfolio');
+  assert.ok(publishResult.externalUrl.includes('/releases/tag/v1.0.'));
   assert.strictEqual(publishResult.apiResponse.platform, 'GITHUB');
-  assert.ok(publishResult.apiResponse.linkedAt instanceof Date);
+  assert.strictEqual(publishResult.apiResponse.releaseId, '12345');
+  assert.strictEqual(publishResult.apiResponse.releaseName, 'Shift94 Portfolio Publish');
   console.info('✓ Linkage execution tests passed.');
 
   // 3. Error Case (Missing GitHub URL)

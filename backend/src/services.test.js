@@ -4,6 +4,7 @@ import { OAuthService } from './modules/oauth/oauth.service.js';
 import { PublishService } from './modules/publishing/publish.service.js';
 import { HistoryService } from './modules/history/history.service.js';
 import { encrypt } from '../utils/encryption.js';
+import fs from 'fs';
 
 // Setup environment mock for key length validation
 process.env.ENCRYPTION_KEY = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
@@ -17,7 +18,8 @@ class MockProjectRepository {
     this.projects = [];
   }
   async create(data) {
-    const p = { id: 'project-1', createdAt: new Date(), ...data };
+    const id = `project-${Math.random().toString(36).substr(2, 9)}`;
+    const p = { id, createdAt: new Date(), ...data };
     this.projects.push(p);
     return p;
   }
@@ -29,8 +31,20 @@ class MockProjectRepository {
     this.projects[idx] = { ...this.projects[idx], ...data };
     return this.projects[idx];
   }
-  async count() {
-    return this.projects.length;
+  async delete(id) {
+    const idx = this.projects.findIndex((p) => p.id === id);
+    if (idx !== -1) {
+      this.projects.splice(idx, 1);
+      return true;
+    }
+    return false;
+  }
+  async count(filter = {}) {
+    let list = this.projects;
+    if (filter.status) {
+      list = list.filter((p) => p.status === filter.status);
+    }
+    return list.length;
   }
 }
 
@@ -154,6 +168,70 @@ async function runTests() {
   assert.strictEqual(stats.linkedinConnected, true);
   assert.strictEqual(stats.githubConnected, false);
   console.info('✓ HistoryService tests passed.');
+
+  // 5. Advanced Deletion and Cleanup Tests
+  console.info('Testing Project Deletion and Cleanup...');
+  
+  // Create a project with an image
+  const projectWithImage = await projectService.createProject(userId, {
+    title: 'Showcase with Image',
+    description: 'Verifying unlinking',
+    techStack: ['React'],
+    image: '/uploads/test-delete-image.png',
+  });
+
+  // Write a temp file to simulate the uploaded cover image
+  const testImagePath = './uploads/test-delete-image.png';
+  if (!fs.existsSync('./uploads')) {
+    fs.mkdirSync('./uploads');
+  }
+  fs.writeFileSync(testImagePath, 'mock data');
+  assert.strictEqual(fs.existsSync(testImagePath), true);
+
+  // Attempt deletion by unauthorized user
+  try {
+    await projectService.deleteProject(projectWithImage.id, 'unauthorized-user');
+    assert.fail('Should fail to delete unauthorized project');
+  } catch (err) {
+    assert.strictEqual(err.statusCode, 403);
+  }
+
+  // Verify project and file still exist
+  assert.strictEqual(fs.existsSync(testImagePath), true);
+  let checkedProject = await projectRepo.findById(projectWithImage.id);
+  assert.ok(checkedProject);
+
+  // Add dummy publish history log to verify cleanup
+  const dummyLog = await logRepo.create({
+    projectId: projectWithImage.id,
+    platform: 'GITHUB',
+    status: 'PUBLISHED',
+  });
+
+  // Delete project by authorized owner
+  const deleteResult = await projectService.deleteProject(projectWithImage.id, userId);
+  assert.strictEqual(deleteResult, true);
+
+  // Verify file has been cleaned up (unlinked)
+  assert.strictEqual(fs.existsSync(testImagePath), false);
+
+  // Verify project is removed from repository
+  checkedProject = await projectRepo.findById(projectWithImage.id);
+  assert.strictEqual(checkedProject, null);
+
+  // Simulate database cascade delete for unit tests
+  logRepo.logs = logRepo.logs.filter((l) => l.projectId !== projectWithImage.id);
+  const orphanLogs = logRepo.logs.filter((l) => l.projectId === projectWithImage.id);
+  assert.strictEqual(orphanLogs.length, 0);
+
+  console.info('✓ Project deletion and cleanup tests passed.');
+
+  // 6. Dashboard Stats Refresh Verification
+  console.info('Testing Dashboard Stats Refresh...');
+  const statsAfterDelete = await historyService.getDashboardStats(userId);
+  assert.strictEqual(statsAfterDelete.totalProjects, 1);
+  assert.strictEqual(statsAfterDelete.publishedProjects, 1);
+  console.info('✓ Dashboard stats refresh tests passed.');
 
   console.info('=== All Service Layer Unit Tests Passed! ===');
 }

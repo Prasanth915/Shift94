@@ -39,6 +39,14 @@ export class PublishService {
       throw error;
     }
 
+    const userAccounts = await this.accountRepository.findByUserId(userId);
+    const linkedinAccount = userAccounts.find(
+      (acc) => acc.platform === 'LINKEDIN' && acc.status === 'CONNECTED'
+    );
+    if (linkedinAccount) {
+      project.linkedinUrl = linkedinAccount.profileUrl;
+    }
+
     const results = [];
 
     for (const platform of platforms) {
