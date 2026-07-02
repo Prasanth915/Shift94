@@ -1,7 +1,7 @@
 {
   "name": "@shift9/shared",
   "version": "1.0.0",
-  "description": "Shared constants, enums, helper functions, types, and validators for Shift 9",
+  "description": "Shared constants, enums, helper functions, types, and validators for Shift94",
   "main": "index.js",
   "private": true,
   "type": "module"

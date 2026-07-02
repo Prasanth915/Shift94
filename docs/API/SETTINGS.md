@@ -1,4 +1,4 @@
-# Shift 9 — User Settings API
+# Shift944 — User Settings API
 
 The User Settings API manages profile updates, password modifications, and OAuth platform connection controls. All endpoints require JWT authentication.
 

@@ -55,10 +55,10 @@ async function main() {
   const project1 = await prisma.project.create({
     data: {
       userId: user.id,
-      title: 'Shift 9',
+      title: 'Shift94',
       subtitle: 'Developer Portfolio Automation Platform',
       description: 'A modern web application that allows developers to create one project post and publish it to multiple professional platforms from one dashboard.',
-      githubUrl: 'https://github.com/johndev/shift-9',
+      githubUrl: 'https://github.com/johndev/shift94',
       demoUrl: 'http://localhost:5173',
       techStack: ['React', 'Vite', 'Tailwind CSS', 'Node.js', 'Express', 'PostgreSQL', 'Prisma'],
       tags: ['SaaS', 'Automation', 'Portfolio'],
@@ -97,7 +97,7 @@ async function main() {
       projectId: project1.id,
       platform: 'GITHUB',
       status: 'PUBLISHED',
-      externalUrl: 'https://github.com/johndev/shift-9',
+      externalUrl: 'https://github.com/johndev/shift94',
       apiResponse: { message: 'Repository linked successfully' },
     },
   });

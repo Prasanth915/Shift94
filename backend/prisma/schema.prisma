@@ -76,19 +76,20 @@ model ConnectedAccount {
 }
 
 model Project {
-  id          String        @id @default(uuid()) @db.Uuid
-  userId      String        @db.Uuid
-  title       String        @db.VarChar(255)
-  subtitle    String?       @db.VarChar(255)
-  description String        @db.Text
-  image       String?       @db.VarChar(255)
-  githubUrl   String?       @db.VarChar(255)
-  demoUrl     String?       @db.VarChar(255)
-  techStack   String[]      @default([]) @db.VarChar(255)
-  tags        String[]      @default([]) @db.VarChar(255)
-  status      ProjectStatus @default(DRAFT)
-  createdAt   DateTime      @default(now()) @db.Timestamp(6)
-  updatedAt   DateTime      @updatedAt @db.Timestamp(6)
+  id               String        @id @default(uuid()) @db.Uuid
+  userId           String        @db.Uuid
+  title            String        @db.VarChar(255)
+  subtitle         String?       @db.VarChar(255)
+  description      String        @db.Text
+  image            String?       @db.VarChar(255)
+  githubUrl        String?       @db.VarChar(255)
+  demoUrl          String?       @db.VarChar(255)
+  techStack        String[]      @default([]) @db.VarChar(255)
+  tags             String[]      @default([]) @db.VarChar(255)
+  status           ProjectStatus @default(DRAFT)
+  sourceRepository Json?         @db.JsonB
+  createdAt        DateTime      @default(now()) @db.Timestamp(6)
+  updatedAt        DateTime      @updatedAt @db.Timestamp(6)
 
   // Relationships
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)

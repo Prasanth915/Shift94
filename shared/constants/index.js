@@ -1,7 +1,7 @@
 // ==========================================
 // Application Constants
 // ==========================================
-export const APP_NAME = 'Shift 9';
+export const APP_NAME = 'Shift94';
 export const APP_VERSION = '1.0.0';
 
 // ==========================================
@@ -38,7 +38,7 @@ export const MAX_LIMIT = 100;
 // Standard Success Messages
 // ==========================================
 export const SuccessMessages = {
-  REGISTRATION_SUCCESS: 'Account created successfully. Welcome to Shift 9!',
+  REGISTRATION_SUCCESS: 'Account created successfully. Welcome to Shift94!',
   LOGIN_SUCCESS: 'Logged in successfully.',
   LOGOUT_SUCCESS: 'Logged out successfully.',
   PROFILE_UPDATE_SUCCESS: 'Profile updated successfully.',

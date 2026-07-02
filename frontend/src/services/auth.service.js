@@ -13,7 +13,7 @@ export const authService = {
   login: async (email, password) => {
     const response = await api.post('/auth/login', { email, password });
     if (response.success && response.data.token) {
-      sessionStorage.setItem('shift9_token', response.data.token);
+      sessionStorage.setItem('shift94_token', response.data.token);
     }
     return response.data;
   },
@@ -28,7 +28,7 @@ export const authService = {
   register: async (name, email, password) => {
     const response = await api.post('/auth/register', { name, email, password });
     if (response.success && response.data.token) {
-      sessionStorage.setItem('shift9_token', response.data.token);
+      sessionStorage.setItem('shift94_token', response.data.token);
     }
     return response.data;
   },
@@ -46,6 +46,7 @@ export const authService = {
    * Log out the user by clearing credentials.
    */
   logout: () => {
+    sessionStorage.removeItem('shift94_token');
     sessionStorage.removeItem('shift9_token');
   },
 };

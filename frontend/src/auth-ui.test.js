@@ -98,7 +98,33 @@ async function runTests() {
   assert.strictEqual(checkGuestGuard(false, true), 'LOADING');
   assert.strictEqual(checkGuestGuard(true, false), 'REDIRECT_TO_DASHBOARD');
   assert.strictEqual(checkGuestGuard(false, false), 'RENDER_CHILDREN');
-  console.info('✓ Guest route guard tests passed.');
+  // 5. Token Migration Tests
+  console.info('Testing Token Migration logic...');
+  const migrateToken = (storage) => {
+    let token = storage.getItem('shift94_token');
+    if (!token) {
+      const oldToken = storage.getItem('shift9_token');
+      if (oldToken) {
+        storage.setItem('shift94_token', oldToken);
+        storage.removeItem('shift9_token');
+        token = oldToken;
+      }
+    }
+    return token;
+  };
+
+  const mockStorage = {
+    store: { shift9_token: 'old-jwt-token-xyz' },
+    getItem(key) { return this.store[key] || null; },
+    setItem(key, val) { this.store[key] = val; },
+    removeItem(key) { delete this.store[key]; }
+  };
+
+  const migratedToken = migrateToken(mockStorage);
+  assert.strictEqual(migratedToken, 'old-jwt-token-xyz');
+  assert.strictEqual(mockStorage.getItem('shift94_token'), 'old-jwt-token-xyz');
+  assert.strictEqual(mockStorage.getItem('shift9_token'), null);
+  console.info('✓ Token migration tests passed.');
 
   console.info('=== All Frontend Auth & UI Unit Tests Passed! ===');
 }

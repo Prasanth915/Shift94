@@ -1,4 +1,4 @@
-# Shift 9 — LinkedIn OAuth & Post Publishing Integration
+# Shift944 — LinkedIn OAuth & Post Publishing Integration
 
 The LinkedIn Integration module allows users to connect their personal LinkedIn profiles and publish rich media posts containing project commentary, links, and cover images.
 

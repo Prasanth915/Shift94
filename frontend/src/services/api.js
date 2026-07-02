@@ -13,7 +13,15 @@ const api = axios.create({
 // Request Interceptor: Inject JWT token from sessionStorage
 api.interceptors.request.use(
   (config) => {
-    const token = sessionStorage.getItem('shift9_token');
+    let token = sessionStorage.getItem('shift94_token');
+    if (!token) {
+      const oldToken = sessionStorage.getItem('shift9_token');
+      if (oldToken) {
+        sessionStorage.setItem('shift94_token', oldToken);
+        sessionStorage.removeItem('shift9_token');
+        token = oldToken;
+      }
+    }
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -32,6 +40,7 @@ api.interceptors.response.use(
   (error) => {
     // If the server returns a 401 Unauthorized, clear session and redirect
     if (error.response && error.response.status === 401) {
+      sessionStorage.removeItem('shift94_token');
       sessionStorage.removeItem('shift9_token');
       // Only redirect to login if we aren't already on a guest page
       const currentPath = window.location.pathname;

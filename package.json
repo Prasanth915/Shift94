@@ -1,7 +1,7 @@
 {
   "name": "shift-9",
   "version": "1.0.0",
-  "description": "Shift 9 — Developer Portfolio Automation Platform",
+  "description": "Shift94 — Developer Portfolio Automation Platform",
   "private": true,
   "workspaces": [
     "backend",

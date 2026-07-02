@@ -17,7 +17,7 @@ export const Landing = () => {
       {/* Navigation Header */}
       <header className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between relative z-10">
         <span className="text-xl font-bold tracking-tight font-display text-white">
-          SHIFT <span className="text-zinc-500">9</span>
+          SHIFT <span className="text-zinc-500">94</span>
         </span>
         <div className="flex items-center gap-4">
           {isAuthenticated ? (

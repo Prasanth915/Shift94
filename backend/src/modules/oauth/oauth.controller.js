@@ -277,4 +277,92 @@ export class OAuthController {
       next(err);
     }
   };
+
+  /**
+   * Checks the availability of a repository name on GitHub.
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   */
+  checkGitHubRepositoryName = async (req, res, next) => {
+    try {
+      const { name } = req.query;
+      if (!name || typeof name !== 'string' || name.trim() === '') {
+        const error = new Error('Repository name is required.');
+        error.statusCode = 400;
+        throw error;
+      }
+
+      const accessToken = await this.oauthService.getDecryptedAccessToken(req.user.id, 'GITHUB');
+      const accounts = await this.oauthService.getConnectedAccounts(req.user.id);
+      const github = accounts.find((acc) => acc.platform === 'GITHUB');
+      if (!github || !github.username) {
+        const error = new Error('GitHub account is not connected.');
+        error.statusCode = 400;
+        throw error;
+      }
+
+      const owner = github.username;
+      
+      try {
+        await this.githubService.checkRepositoryAccess(accessToken, owner, name.trim());
+        // If it returns successfully, repository already exists
+        res.status(200).json(
+          formatStandardResponse(true, 'Repository name availability checked.', { available: false, reason: 'ALREADY_EXISTS' })
+        );
+      } catch (checkErr) {
+        if (checkErr.statusCode === 404) {
+          res.status(200).json(
+            formatStandardResponse(true, 'Repository name availability checked.', { available: true })
+          );
+        } else {
+          throw checkErr;
+        }
+      }
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  /**
+   * Creates a new GitHub repository for the authenticated user.
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   */
+  createGitHubRepository = async (req, res, next) => {
+    try {
+      const { name, description, private: isPrivate, autoInit, gitignoreTemplate, licenseTemplate, topics } = req.body;
+      
+      if (!name || typeof name !== 'string' || name.trim() === '') {
+        const error = new Error('Repository name is required.');
+        error.statusCode = 400;
+        throw error;
+      }
+
+      if (!/^[a-z0-9_.-]+$/i.test(name.trim())) {
+        const error = new Error('Invalid repository name.');
+        error.statusCode = 422;
+        throw error;
+      }
+
+      const accessToken = await this.oauthService.getDecryptedAccessToken(req.user.id, 'GITHUB');
+      
+      const repo = await this.githubService.createRepository(accessToken, {
+        name: name.trim(),
+        description: description || '',
+        private: !!isPrivate,
+        autoInit: autoInit !== false,
+        gitignoreTemplate: gitignoreTemplate || null,
+        licenseTemplate: licenseTemplate || null,
+        topics: topics || [],
+      });
+
+      res.status(201).json(
+        formatStandardResponse(true, 'GitHub repository created successfully.', { repository: repo })
+      );
+    } catch (err) {
+      next(err);
+    }
+  };
 }

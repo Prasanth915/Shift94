@@ -1,10 +1,10 @@
-# Shift 9
+# Shift94
 
 > Create once. Publish everywhere.
 
-Shift 9 is a developer portfolio automation platform that lets you create a single project post and publish it to multiple professional platforms from one dashboard.
+Shift94 is a developer portfolio automation platform that lets you create a single project post and publish it to multiple professional platforms from one dashboard.
 
-![Shift 9](https://img.shields.io/badge/Shift_9-Developer_Platform-000000?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiPjxwYXRoIGQ9Ik0xMiAyTDIgN2wxMCA1IDEwLTV6Ii8+PHBhdGggZD0iTTIgMTdsMTAgNSAxMC01Ii8+PHBhdGggZD0iTTIgMTJsMTAgNSAxMC01Ii8+PC9zdmc+)
+![Shift94](https://img.shields.io/badge/Shift_9-Developer_Platform-000000?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiPjxwYXRoIGQ9Ik0xMiAyTDIgN2wxMCA1IDEwLTV6Ii8+PHBhdGggZD0iTTIgMTdsMTAgNSAxMC01Ii8+PHBhdGggZD0iTTIgMTJsMTAgNSAxMC01Ii8+PC9zdmc+)
 
 ## ✨ Features
 
@@ -50,7 +50,7 @@ Shift 9 is a developer portfolio automation platform that lets you create a sing
 ## 📁 Project Structure
 
 ```
-shift-9/
+Shift94/
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
@@ -95,8 +95,8 @@ shift-9/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/shift-9.git
-cd shift-9
+git clone https://github.com/your-username/Shift94.git
+cd Shift94
 ```
 
 ### 2. Environment Setup
@@ -247,4 +247,4 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 ---
 
-**Built with ❤️ by Shift 9**
+**Built with ❤️ by Shift94**

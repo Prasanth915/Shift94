@@ -26,6 +26,16 @@ export const oauthService = {
    * Fetches the user's GitHub repositories.
    */
   getRepositories: () => api.get('/oauth/github/repositories'),
+
+  /**
+   * Checks repository name availability.
+   */
+  checkRepositoryName: (name) => api.get(`/oauth/github/repositories/check?name=${encodeURIComponent(name)}`),
+
+  /**
+   * Creates a new GitHub repository.
+   */
+  createRepository: (data) => api.post('/oauth/github/repositories', data),
 };
 
 export default oauthService;

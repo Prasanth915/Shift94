@@ -14,7 +14,7 @@ const tests = [
 ];
 
 console.info('==================================================');
-console.info('   Running Shift 9 Backend Test Suite Runner      ');
+console.info('   Running Shift94 Backend Test Suite Runner      ');
 console.info('==================================================\n');
 
 let passedCount = 0;

@@ -1,4 +1,4 @@
-# Shift 9 — Dashboard API
+# Shift944 — Dashboard API
 
 The Dashboard API provides aggregated metadata and connection statuses to drive the main user interface. It is designed to be lightweight and responsive.
 
@@ -37,7 +37,7 @@ Retrieves the 5 most recently created projects for the user.
       "projects": [
         {
           "id": "8a5e3c12-ef54-47ef-8d77-6d65f5a8a1f2",
-          "title": "Shift 9",
+          "title": "Shift944",
           "subtitle": "Developer Portfolio Automation Platform",
           "status": "PUBLISHED",
           "createdAt": "2026-06-30T21:26:05.000Z"

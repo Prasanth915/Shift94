@@ -1,6 +1,6 @@
-# Shift 9 — Authentication Architecture
+# Shift944 — Authentication Architecture
 
-The Authentication module provides secure local registration, session management, and authorization boundaries for the Shift 9 application.
+The Authentication module provides secure local registration, session management, and authorization boundaries for the Shift944 application.
 
 ## Component Overview
 

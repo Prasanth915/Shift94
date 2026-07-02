@@ -1,6 +1,6 @@
 # @shift9/shared
 
-The **Shared Module** serves as the central, framework-independent library for the Shift 9 application. It contains resources that are used by both the React frontend and the Express backend.
+The **Shared Module** serves as the central, framework-independent library for the Shift94 application. It contains resources that are used by both the React frontend and the Express backend.
 
 ## Directory Structure
 

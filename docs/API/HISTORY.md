@@ -1,4 +1,4 @@
-# Shift 9 — Publish History API
+# Shift944 — Publish History API
 
 The Publish History API allows users to track the distribution status of their project showcases and retry any failed publishing actions. All endpoints require JWT authentication.
 
@@ -28,7 +28,7 @@ The Publish History API allows users to track the distribution status of their p
           "externalUrl": "https://linkedin.com/post/123",
           "createdAt": "2026-06-30T21:26:05.000Z",
           "project": {
-            "title": "Shift 9"
+            "title": "Shift944"
           }
         }
       ],
@@ -66,7 +66,7 @@ The Publish History API allows users to track the distribution status of their p
         "project": {
           "id": "proj-1234",
           "userId": "user-123",
-          "title": "Shift 9"
+          "title": "Shift944"
         }
       }
     },

@@ -58,7 +58,7 @@ export const DashboardLayout = ({ children }) => {
           <div className="flex items-center justify-between">
             <Link to="/dashboard" className="flex items-center gap-2">
               <span className="text-xl font-bold tracking-tight text-white font-display">
-                SHIFT <span className="text-zinc-500">9</span>
+                SHIFT <span className="text-zinc-500">94</span>
               </span>
             </Link>
             <button className="lg:hidden text-zinc-400 cursor-pointer" onClick={() => setSidebarOpen(false)}>

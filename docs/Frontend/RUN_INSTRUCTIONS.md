@@ -1,6 +1,6 @@
-# Shift 9 — Local Run Instructions
+# Shift944 — Local Run Instructions
 
-Follow these instructions to run the complete Shift 9 MVP application locally on your machine.
+Follow these instructions to run the complete Shift944 MVP application locally on your machine.
 
 ## Prerequisites
 1. **Node.js**: Ensure Node.js (v18 or higher) is installed.
@@ -9,7 +9,7 @@ Follow these instructions to run the complete Shift 9 MVP application locally on
 ---
 
 ## 1. Database Setup
-1. Create a database named `shift9` on your local PostgreSQL server.
+1. Create a database named `Shift94` on your local PostgreSQL server.
 2. In the `backend/` directory, create a `.env` file based on `.env.example` and set your `DATABASE_URL`:
    ```env
    DATABASE_URL="postgresql://postgres:PASSWORD@localhost:5432/shift9?schema=public"

@@ -1,4 +1,4 @@
-# Shift 9 — GitHub OAuth & Repository Linkage Integration
+# Shift944 — GitHub OAuth & Repository Linkage Integration
 
 The GitHub Integration module allows users to securely link their GitHub accounts, retrieve repository listings, and associate existing repositories with portfolio projects.
 
@@ -67,9 +67,9 @@ The GitHub Integration module allows users to securely link their GitHub account
       "repositories": [
         {
           "id": "123456789",
-          "name": "shift-9",
-          "fullName": "johndev/shift-9",
-          "url": "https://github.com/johndev/shift-9",
+          "name": "Shift944",
+          "fullName": "johndev/Shift944",
+          "url": "https://github.com/johndev/Shift944",
           "description": "Developer Portfolio Automation Platform",
           "defaultBranch": "main",
           "language": "JavaScript",

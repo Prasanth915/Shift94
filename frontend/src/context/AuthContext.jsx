@@ -13,7 +13,15 @@ export const AuthProvider = ({ children }) => {
   // Restore session on mount
   useEffect(() => {
     const restoreSession = async () => {
-      const token = sessionStorage.getItem('shift9_token');
+      let token = sessionStorage.getItem('shift94_token');
+      if (!token) {
+        const oldToken = sessionStorage.getItem('shift9_token');
+        if (oldToken) {
+          sessionStorage.setItem('shift94_token', oldToken);
+          sessionStorage.removeItem('shift9_token');
+          token = oldToken;
+        }
+      }
       if (token) {
         try {
           const profile = await authService.getMe();

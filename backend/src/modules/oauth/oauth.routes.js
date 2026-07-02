@@ -22,6 +22,8 @@ router.get('/github/callback', oauthController.githubCallback);
 router.get('/github/status', authMiddleware, oauthController.getGitHubStatus);
 router.post('/github/disconnect', authMiddleware, oauthController.disconnectGitHub);
 router.get('/github/repositories', authMiddleware, oauthController.getGitHubRepositories);
+router.get('/github/repositories/check', authMiddleware, oauthController.checkGitHubRepositoryName);
+router.post('/github/repositories', authMiddleware, oauthController.createGitHubRepository);
 
 // LinkedIn OAuth
 router.get('/linkedin', authMiddleware, oauthController.connectLinkedIn);

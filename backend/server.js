@@ -53,7 +53,7 @@ app.use('/api/v1/publish', publishRoutes);
 app.get('/health', (req, res) => {
   res.status(200).json({
     success: true,
-    message: 'Shift 9 API server is running and healthy',
+    message: 'Shift94 API server is running and healthy',
     data: {
       uptime: process.uptime(),
       timestamp: new Date(),
@@ -95,7 +95,7 @@ app.use((err, req, res, next) => {
 
 // Start the server
 app.listen(config.port, () => {
-  console.info(`[Shift 9 Server] Running in ${config.nodeEnv} mode on port ${config.port}`);
+  console.info(`[Shift94 Server] Running in ${config.nodeEnv} mode on port ${config.port}`);
 });
 
 export default app;

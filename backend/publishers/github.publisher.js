@@ -21,7 +21,7 @@ export class GitHubPublisher {
           Authorization: `Bearer ${account.accessToken}`,
           Accept: 'application/vnd.github+json',
           'X-GitHub-Api-Version': '2022-11-28',
-          'User-Agent': 'Shift-9-App',
+          'User-Agent': 'Shift94-App',
         },
       });
       return response.status === 200;

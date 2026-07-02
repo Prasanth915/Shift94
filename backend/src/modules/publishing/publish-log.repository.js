@@ -141,6 +141,34 @@ export class PublishLogRepository {
   }
 
   /**
+   * Finds an active publish log (PENDING or PUBLISHING) for a specific project and platform.
+   * @param {string} projectId
+   * @param {string} platform
+   * @returns {Promise<object|null>}
+   */
+  async findActiveLog(projectId, platform) {
+    return prisma.publishLog.findFirst({
+      where: {
+        projectId,
+        platform: platform.toUpperCase(),
+        status: { in: ['PENDING', 'PUBLISHING'] },
+      },
+    });
+  }
+
+  /**
+   * Atomically updates status from PENDING to PUBLISHING to acquire a thread lock.
+   * @param {string} id
+   * @returns {Promise<object>}
+   */
+  async acquirePublishLock(id) {
+    return prisma.publishLog.update({
+      where: { id, status: 'PENDING' },
+      data: { status: 'PUBLISHING' },
+    });
+  }
+
+  /**
    * Counts the total number of publish logs matching filters.
    * @param {object} filter
    * @param {string} [filter.userId]

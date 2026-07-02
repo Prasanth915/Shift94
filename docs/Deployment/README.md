@@ -1,4 +1,4 @@
-# Shift 9 — Deployment Guide
+# Shift944 — Deployment Guide
 
 This directory contains guides on how to run the application locally and deploy to various hosting providers.
 

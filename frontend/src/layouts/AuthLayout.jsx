@@ -17,7 +17,7 @@ export const AuthLayout = ({ children, title, subtitle }) => {
         <div className="text-center">
           <Link to="/" className="inline-block">
             <span className="text-2xl font-bold tracking-tight text-white font-display">
-              SHIFT <span className="text-zinc-500">9</span>
+              SHIFT <span className="text-zinc-500">94</span>
             </span>
           </Link>
           {title && (

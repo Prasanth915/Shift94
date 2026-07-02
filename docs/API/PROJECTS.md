@@ -1,4 +1,4 @@
-# Shift 9 — Project Management API
+# Shift94 — Project Management API
 
 The Project Management module allows users to create, update, delete, and list project showcase entries. All endpoints require JWT authentication.
 
@@ -18,12 +18,13 @@ The Project Management module allows users to create, update, delete, and list p
   - `tags`: Array or comma-separated string (Optional)
   - `platforms`: Array or comma-separated string (Optional, e.g., `["LINKEDIN", "GITHUB"]`)
   - `image`: Binary file (Optional, max 5MB, JPEG/PNG/WebP only)
+  - `sourceRepository`: JSON String (Optional, structured repository metadata for created repository)
 
 ### 2. Update Project
 - **Method**: `PUT`
 - **Path**: `/api/v1/projects/:id`
 - **Content-Type**: `multipart/form-data` or `application/json`
-- **Request Parameters**: Same as Create Project (all fields optional). If `image` file is uploaded, the existing cover image path is updated.
+- **Request Parameters**: Same as Create Project (all fields optional). If `image` file is uploaded, the existing cover image path is updated. Includes `sourceRepository` JSON metadata.
 
 ### 3. List Projects
 - **Method**: `GET`
@@ -41,6 +42,53 @@ The Project Management module allows users to create, update, delete, and list p
 ### 5. Delete Project
 - **Method**: `DELETE`
 - **Path**: `/api/v1/projects/:id`
+
+## GitHub Repository Management APIs
+
+### 1. Check Repository Name Availability
+- **Method**: `GET`
+- **Path**: `/api/v1/oauth/github/repositories/check`
+- **Query Parameters**:
+  - `name`: String (Required, repository slug name to check)
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "Repository name availability checked.",
+    "data": { "available": true }
+  }
+  ```
+
+### 2. Create GitHub Repository
+- **Method**: `POST`
+- **Path**: `/api/v1/oauth/github/repositories`
+- **Content-Type**: `application/json`
+- **Request Body**:
+  - `name`: String (Required, repository slug name)
+  - `description`: String (Optional)
+  - `private`: Boolean (Default: false)
+  - `autoInit`: Boolean (Default: true)
+  - `gitignoreTemplate`: String (Optional, e.g. "Node")
+  - `licenseTemplate`: String (Optional, e.g. "mit")
+  - `topics`: Array of strings (Optional)
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "GitHub repository created successfully.",
+    "data": {
+      "repository": {
+        "id": 1286859157,
+        "name": "shift94-e2e-real",
+        "url": "https://github.com/Prasanth915/shift94-e2e-real",
+        "owner": "Prasanth915",
+        "defaultBranch": "main",
+        "visibility": "public",
+        "createdAt": "2026-07-02T06:54:21Z"
+      }
+    }
+  }
+  ```
 
 ## Image Upload Flow
 1. The client sends a `POST` or `PUT` request with `Content-Type: multipart/form-data`.

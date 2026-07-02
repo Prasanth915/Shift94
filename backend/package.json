@@ -1,7 +1,7 @@
 {
   "name": "shift9-backend",
   "version": "1.0.0",
-  "description": "Shift 9 — Developer Portfolio Automation Platform API Backend",
+  "description": "Shift94 — Developer Portfolio Automation Platform API Backend",
   "main": "server.js",
   "type": "module",
   "private": true,

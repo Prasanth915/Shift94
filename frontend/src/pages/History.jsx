@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { RefreshCw, Search, ArrowUpRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { DashboardLayout } from '../layouts/DashboardLayout.jsx';
@@ -14,6 +14,7 @@ export const History = () => {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [retryLoading, setRetryLoading] = useState(null);
+  const isRetrying = useRef(false);
 
   // Filters
   const [page, setPage] = useState(1);
@@ -53,6 +54,8 @@ export const History = () => {
   };
 
   const handleRetry = async (logId) => {
+    if (isRetrying.current) return;
+    isRetrying.current = true;
     setRetryLoading(logId);
     toast.loading('Retrying publish attempt...', { id: 'retry-toast' });
     try {
@@ -62,6 +65,7 @@ export const History = () => {
     } catch (err) {
       toast.error(err.message || 'Retry failed.', { id: 'retry-toast' });
     } finally {
+      isRetrying.current = false;
       setRetryLoading(null);
     }
   };

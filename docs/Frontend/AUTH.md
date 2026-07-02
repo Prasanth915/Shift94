@@ -1,4 +1,4 @@
-# Shift 9 — Frontend Authentication & Routing Flow
+# Shift944 — Frontend Authentication & Routing Flow
 
 This document details the client-side session management, route guards, and API integrations for user authentication.
 
@@ -8,7 +8,7 @@ This document details the client-side session management, route guards, and API 
 - **Form**: `/register`
 - **Validation**: Enforces name length, email format, and password strength (incorporating shared validators).
 - **Service call**: Calls `authService.register` which sends a `POST /api/v1/auth/register` request.
-- **Success**: Receives the JWT, saves it to `sessionStorage` as `shift9_token`, updates the `AuthContext` user state, and redirects to `/dashboard`.
+- **Success**: Receives the JWT, saves it to `sessionStorage` as `Shift94_token`, updates the `AuthContext` user state, and redirects to `/dashboard`.
 
 ### 2. Login
 - **Form**: `/login`
@@ -16,12 +16,12 @@ This document details the client-side session management, route guards, and API 
 - **Success**: Saves the JWT to `sessionStorage`, updates `AuthContext`, and redirects to `/dashboard`.
 
 ### 3. Session Recovery
-- On application mount, the `AuthProvider` checks `sessionStorage` for a `shift9_token`.
+- On application mount, the `AuthProvider` checks `sessionStorage` for a `Shift94_token`.
 - If found, it calls `authService.getMe()` to fetch the profile.
 - If the token is invalid or expired, it is removed and the user remains unauthenticated.
 
 ### 4. Logout
-- Clears `shift9_token` from `sessionStorage`.
+- Clears `Shift94_token` from `sessionStorage`.
 - Resets the `AuthContext` user state to `null`.
 - Redirects the user to `/login`.
 

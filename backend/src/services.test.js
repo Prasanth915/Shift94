@@ -28,6 +28,9 @@ class MockProjectRepository {
   }
   async update(id, data) {
     const idx = this.projects.findIndex((p) => p.id === id);
+    if (idx === -1) {
+      throw new Error(`Project not found in mock repo: ${id}`);
+    }
     this.projects[idx] = { ...this.projects[idx], ...data };
     return this.projects[idx];
   }
@@ -70,13 +73,32 @@ class MockPublishLogRepository {
     this.logs = [];
   }
   async create(data) {
-    const l = { id: `log-${Date.now()}`, createdAt: new Date(), ...data };
+    const l = { id: `log-${Math.random()}`, createdAt: new Date(), ...data };
     this.logs.push(l);
     return l;
   }
   async updateStatus(id, status, externalUrl, apiResponse) {
     const idx = this.logs.findIndex((l) => l.id === id);
     this.logs[idx] = { ...this.logs[idx], status, externalUrl, apiResponse };
+    return this.logs[idx];
+  }
+  async findById(id) {
+    return this.logs.find((l) => l.id === id) || null;
+  }
+  async findActiveLog(projectId, platform) {
+    return this.logs.find((l) => l.projectId === projectId && l.platform === platform.toUpperCase() && ['PENDING', 'PUBLISHING'].includes(l.status)) || null;
+  }
+  async acquirePublishLock(id) {
+    const idx = this.logs.findIndex((l) => l.id === id && l.status === 'PENDING');
+    if (idx === -1) {
+      throw new Error('Lock acquisition failed');
+    }
+    this.logs[idx].status = 'PUBLISHING';
+    return this.logs[idx];
+  }
+  async retryFailed(id) {
+    const idx = this.logs.findIndex((l) => l.id === id);
+    this.logs[idx] = { ...this.logs[idx], status: 'PENDING', externalUrl: null, apiResponse: null };
     return this.logs[idx];
   }
 }
@@ -93,6 +115,7 @@ class MockPublisher {
 
 class MockPublisherManager {
   async publish(platform, project, account) {
+    await new Promise((resolve) => setTimeout(resolve, 10));
     return {
       success: true,
       externalUrl: `https://${platform.toLowerCase()}.com/post/123`,
@@ -138,6 +161,13 @@ async function runTests() {
   assert.strictEqual(savedConnection.platform, 'LINKEDIN');
   assert.ok(savedConnection.accessToken !== 'plain_access_token', 'Access token must be encrypted');
 
+  await oauthService.saveConnection(userId, {
+    platform: 'GITHUB',
+    accessToken: 'plain_access_token',
+    username: 'johndev',
+    profileUrl: 'https://github.com/johndev',
+  });
+
   const decryptedToken = await oauthService.getDecryptedAccessToken(userId, 'LINKEDIN');
   assert.strictEqual(decryptedToken, 'plain_access_token', 'Decrypted token should match original');
   console.info('✓ OAuthService tests passed.');
@@ -148,10 +178,56 @@ async function runTests() {
   const pubManager = new MockPublisherManager();
   const publishService = new PublishService(projectRepo, accountRepo, logRepo, pubManager);
 
+  // Test case 3a: Successful LinkedIn publish
   const publishResult = await publishService.publishProject(project.id, userId, ['LINKEDIN']);
   assert.strictEqual(publishResult.length, 1);
   assert.strictEqual(publishResult[0].status, 'PUBLISHED');
   assert.strictEqual(publishResult[0].externalUrl, 'https://linkedin.com/post/123');
+
+  // Test case 3b: GitHub validation fail-fast
+  try {
+    await publishService.publishProject(project.id, userId, ['GITHUB']);
+    assert.fail('Should have failed due to missing GITHUB repo');
+  } catch (err) {
+    assert.strictEqual(err.statusCode, 400);
+    assert.ok(err.message.includes('Missing GitHub repository'));
+  }
+  // Verify no GITHUB log was created
+  assert.strictEqual(logRepo.logs.filter(l => l.platform === 'GITHUB').length, 0);
+
+  // Link a repository to the project to test successful GitHub publishing and concurrency
+  await projectRepo.update(project.id, {
+    githubUrl: 'https://github.com/johndev/repo',
+    sourceRepository: { id: 12345, owner: 'johndev', name: 'repo' }
+  });
+
+  // Test case 3c: Concurrent publishing block
+  // Initiate first publish and second publish concurrently
+  const p1 = publishService.publishProject(project.id, userId, ['GITHUB']);
+  let concurrentFailed = false;
+  try {
+    await publishService.publishProject(project.id, userId, ['GITHUB']);
+  } catch (err) {
+    concurrentFailed = true;
+    assert.strictEqual(err.statusCode, 409, 'Concurrent request should return 409 Conflict');
+    assert.ok(err.message.includes('already in progress'));
+  }
+  assert.ok(concurrentFailed, 'Concurrent request should have thrown 409');
+  
+  // Wait for the first publish to complete
+  await p1;
+
+  // Test case 3d: Retry failed log reuses logId without duplicating
+  const failedLog = await logRepo.create({
+    projectId: project.id,
+    platform: 'GITHUB',
+    status: 'FAILED',
+  });
+  const retryResult = await publishService.retryPublish(failedLog.id, userId);
+  assert.strictEqual(retryResult.id, failedLog.id, 'Retry must update the same log ID');
+  assert.strictEqual(retryResult.status, 'PUBLISHED');
+  // Verify there is only one log for GITHUB in logs array (the one we retried plus the completed p1)
+  assert.strictEqual(logRepo.logs.filter(l => l.platform === 'GITHUB').length, 2);
 
   // Verify project status updated to PUBLISHED
   const updatedProject = await projectRepo.findById(project.id);
@@ -166,7 +242,7 @@ async function runTests() {
   assert.strictEqual(stats.totalProjects, 1);
   assert.strictEqual(stats.publishedProjects, 1);
   assert.strictEqual(stats.linkedinConnected, true);
-  assert.strictEqual(stats.githubConnected, false);
+  assert.strictEqual(stats.githubConnected, true);
   console.info('✓ HistoryService tests passed.');
 
   // 5. Advanced Deletion and Cleanup Tests

@@ -45,6 +45,17 @@ export class ProjectController {
       // Extract local file path if uploaded
       const image = req.file ? `/uploads/${req.file.filename}` : null;
 
+      let sourceRepository = null;
+      if (req.body.sourceRepository) {
+        try {
+          sourceRepository = typeof req.body.sourceRepository === 'string'
+            ? JSON.parse(req.body.sourceRepository)
+            : req.body.sourceRepository;
+        } catch (parseErr) {
+          console.warn('Failed to parse sourceRepository:', parseErr.message);
+        }
+      }
+
       const project = await this.projectService.createProject(req.user.id, {
         title,
         subtitle,
@@ -55,6 +66,7 @@ export class ProjectController {
         tags,
         image,
         status: 'DRAFT',
+        sourceRepository,
       });
 
       res.status(201).json(
@@ -93,6 +105,16 @@ export class ProjectController {
 
       if (req.file) {
         updates.image = `/uploads/${req.file.filename}`;
+      }
+
+      if (req.body.sourceRepository !== undefined) {
+        try {
+          updates.sourceRepository = typeof req.body.sourceRepository === 'string'
+            ? JSON.parse(req.body.sourceRepository)
+            : req.body.sourceRepository;
+        } catch (parseErr) {
+          console.warn('Failed to parse sourceRepository:', parseErr.message);
+        }
       }
 
       const project = await this.projectService.updateProject(id, req.user.id, updates);

@@ -1,6 +1,6 @@
-# Shift 9 — Database Design
+# Shift94 — Database Design
 
-This document details the database schema, entity-relationship diagram, indexing strategies, and migration policies for Shift 9.
+This document details the database schema, entity-relationship diagram, indexing strategies, and migration policies for Shift94.
 
 ## Entity-Relationship Diagram
 
@@ -37,6 +37,7 @@ erDiagram
         varchar[] techStack
         varchar[] tags
         enum status
+        jsonb sourceRepository
         timestamp createdAt
         timestamp updatedAt
     }
@@ -72,7 +73,7 @@ erDiagram
   - Index on `[createdAt DESC]` for chronological sorting on the History page.
 
 ## Migration Strategy
-Shift 9 uses **Prisma Migrations** to track database changes:
+Shift94 uses **Prisma Migrations** to track database changes:
 1. Ensure the PostgreSQL instance is running locally.
 2. Configure `DATABASE_URL` in `backend/.env`.
 3. Generate and apply migrations:

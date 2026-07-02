@@ -49,7 +49,7 @@ export default function Sidebar({ isOpen, onClose }) {
             <div className="w-8 h-8 bg-zinc-900 rounded-lg flex items-center justify-center shadow-md">
               <Zap className="w-4 h-4 text-white" />
             </div>
-            <span className="font-bold text-zinc-900 tracking-tight">Shift 9</span>
+            <span className="font-bold text-zinc-900 tracking-tight">Shift94</span>
           </NavLink>
           <button
             onClick={onClose}

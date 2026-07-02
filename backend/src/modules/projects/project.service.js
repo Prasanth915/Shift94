@@ -42,6 +42,7 @@ export class ProjectService {
       techStack: data.techStack,
       tags: data.tags || [],
       status: data.status || 'DRAFT',
+      sourceRepository: data.sourceRepository || null,
     });
   }
 
